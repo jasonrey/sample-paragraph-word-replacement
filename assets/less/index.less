@@ -1,0 +1,39 @@
+body {
+    padding-top: 50px;
+
+    p.question {
+        overflow: hidden;
+
+        > span {
+            display: inline-block;
+
+            margin: 10px 0;
+
+            &:hover {
+                background-color: blue;
+            }
+
+            &.selected {
+                background-color: green;
+            }
+
+            > span {
+                display: inline-block;
+
+                margin: 10px 5px;
+            }
+        }
+    }
+
+    .chosen {
+        display: inline-block;
+        border: 1px solid gray;
+        border-radius: 5px;
+        display: none;
+
+        span {
+            margin: 10px;
+            display: inline-block;
+        }
+    }
+}
