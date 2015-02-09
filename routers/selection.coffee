@@ -3,6 +3,6 @@ router = express.Router()
 
 router
     .get "/", (req, res) ->
-        res.render "index"
+        res.render "selection"
 
 module.exports = router
