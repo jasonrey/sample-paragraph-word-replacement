@@ -3,6 +3,7 @@ $ ->
         return new Array(n + 1).join(@)
 
     qParagraph = $ "p.question"
+    aParagraph = $ "p.answer"
 
     text = qParagraph.text()
 
@@ -31,28 +32,28 @@ $ ->
 
         transformed.push word
 
-    qParagraph.html transformed.join " "
+    transformedParagraph = transformed.join ""
 
-    aParagraph = $ "p.answer"
-
-    aParagraph.html transformed.join " "
+    qParagraph.html transformedParagraph
+    aParagraph.html transformedParagraph
 
     qNodes = qParagraph.find "> span"
     aNodes = aParagraph.find "> span"
 
-    qNodes.on "click", ->
-        qNode = $ @
-        index = qNode.index()
+    isConsecutiveSelect = (node) ->
+        paragraph = $ "p.question"
+        nodes = paragraph.find "> span"
+        index = node.index()
 
         # Don't allow punctuation
-        if qNode.hasClass "punc"
+        if node.hasClass "punc"
             return
 
         # Check for mode
-        selecting = not qNode.hasClass "selected"
+        selecting = not node.hasClass "selected"
 
         # Search for selected nodes
-        selectedQNodes = qNodes.filter ".selected"
+        selectedQNodes = nodes.filter ".selected"
 
         # Only allow consecutive selection
         if selectedQNodes.length > 0
@@ -65,10 +66,65 @@ $ ->
             else #not selecting
                 return if min < index < max
 
+        return true
+
+
+    qNodes.on "mouseover", ->
+        qNode = $ @
+
+        if !isConsecutiveSelect qNode
+            return
+
+        qNode.addClass "hover"
+
+    qNodes.on "mouseout", ->
+        qNode = $ @
+
+        qNode.removeClass "hover"
+
+    qNodes.on "click", ->
+        qNode = $ @
+
+        if !isConsecutiveSelect qNode
+            return
+
         qNode.toggleClass "selected"
 
-        aNode = aNodes.eq index
+        # Restructure from all the nodes
+        wordCounter = 0
+        answer = []
+        input = null
 
-        target = aNode.find "span"
+        # Find if there are initial input and value
+        initialInput = aParagraph.find "input"
+        initialValue = initialInput.val()
 
-        target.text if qNode.hasClass("selected") then "_".repeat qNode.text().length else qNode.text()
+        for node in qNodes
+            node = $ node
+
+            if node.hasClass "selected"
+                if wordCounter is 0
+                    input = $ "<input type='text' />"
+
+                    input.attr "data-chars", 0
+
+                    if initialValue?
+                        input.val initialValue
+
+                    answer.push input
+
+                length = parseInt input.attr "data-chars"
+
+                input.attr "data-chars", length + node.text().length
+
+                wordCounter++
+            else
+                wordCounter = 0
+                answer.push node.clone()
+
+        aParagraph.html answer
+
+        # Set the width based on chars length
+        if input?
+            length = parseInt input.attr "data-chars"
+            input.css "width", length * 10
