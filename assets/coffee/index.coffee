@@ -20,12 +20,12 @@ $ ->
 
     for word in words
         if word[0] in tokens
-            word = word[0] + "<span><span>" + word.substr(1)
+            word = "<span class='punc'><span>" + word[0] + "</span></span><span><span>" + word.substr(1)
         else
             word = "<span><span>" + word
 
         if word[word.length - 1] in tokens
-            word = word.slice(0, -1) + "</span></span>" + word[word.length - 1]
+            word = word.slice(0, -1) + "</span></span><span class='punc'><span>" + word[word.length - 1] + "</span></span>"
         else
             word = word + "</span></span>"
 
@@ -43,6 +43,10 @@ $ ->
     qNodes.on "click", ->
         qNode = $ @
         index = qNode.index()
+
+        # Don't allow punctuation
+        if qNode.hasClass "punc"
+            return
 
         # Check for mode
         selecting = not qNode.hasClass "selected"
