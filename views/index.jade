@@ -1,8 +1,20 @@
-extends html
+doctype html
+html
+    head
+        title= title
+        link(rel="stylesheet", href="css/bootstrap.min.css")
+        script(type="text/javascript", src="js/jquery.min.js")
 
-block content
-    .container
-        .panel.panel-default
-            .panel-body
-                a.btn.btn-default(href="/selection") Selection
-                a.btn.btn-default(href="/replacement") Replacement
+        link(rel="stylesheet/less", type="text/css", href="less/index.less")
+
+        script(type="text/javascript", src="js/less.min.js")
+        script(type="text/javascript", src="js/coffee-script.js")
+    body
+        script(type="text/coffeescript", src="coffee/index.coffee")
+        .container
+            p.question Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec sapien scelerisque, mollis justo at, cursus ante.
+
+        hr
+
+        .container
+            p.answer
